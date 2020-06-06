@@ -5,9 +5,6 @@ from sklearn.datasets import make_blobs
 from scipy.spatial import distance
 np.seterr(divide='ignore', invalid='ignore')
 
-# Create dataset with 3 random cluster centers and 1000 datapoints
-x, y = make_blobs(n_samples = 1000, centers = 3, n_features=2, shuffle=True, random_state=31)
-
 class Kmeans:
     def __init__(self, points, numOfCentroids):
         self.points = points
@@ -60,13 +57,29 @@ class Kmeans:
                 correct += 1
         print(float(correct/self.n))
 
-    def plotPoints(self):
+    def plot_points(self):
         plt.scatter(self.points[:,0], self.points[:,1], color='blue')
         plt.scatter(self.centroids[:,0], self.centroids[:,1], color='red')
         plt.show()
+
+    def calc_variance(self):
+        sumDist = 0
+        # iterate through points and sum up distance to respective centroids
+        for i in range(self.n):
+            index = self.pointsId[i]
+            centroidPos = self.centroids[index].reshape((1,2))
+            tempPoint = self.points[i].reshape((1,2))
+            dist = distance.cdist(centroidPos, tempPoint)
+            # print(dist)
+            sumDist += dist
+        print(sumDist)
+        
+# Create dataset with 3 random cluster centers and 1000 datapoints
+x, y = make_blobs(n_samples = 1000, centers = 3, n_features=2, shuffle=True, random_state=31)
         
 k = Kmeans(x, 3)
 k.kmeans()
-k.accuracy(y)
-k.plotPoints()
+# k.accuracy(y)
+k.plot_points()
+k.calc_variance()
 
